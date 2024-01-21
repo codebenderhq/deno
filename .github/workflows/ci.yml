@@ -177,49 +177,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: Install protoc
-        uses: arduino/setup-protoc@v2
-        with:
-          version: '21.12'
-          repo-token: '${{ secrets.GITHUB_TOKEN }}'
-        if: '!(matrix.skip)'
-      - if: |-
-          !(matrix.skip) && (matrix.profile == 'release' &&
-          matrix.job == 'test' &&
-          github.repository == 'codebenderhq/deno' &&
-          (github.ref == 'refs/heads/main' ||
-          startsWith(github.ref, 'refs/tags/')))
-        name: Authenticate with Google Cloud
-        uses: google-github-actions/auth@v1
-        with:
-          project_id: denoland
-          credentials_json: '${{ secrets.GCP_SA_KEY }}'
-          export_environment_variables: true
-          create_credentials_file: true
-      - name: Setup gcloud (unix)
-        if: |-
-          !(matrix.skip) && (runner.os != 'Windows' &&
-          matrix.profile == 'release' &&
-          matrix.job == 'test' &&
-          github.repository == 'codebenderhq/deno' &&
-          (github.ref == 'refs/heads/main' ||
-          startsWith(github.ref, 'refs/tags/')))
-        uses: google-github-actions/setup-gcloud@v1
-        with:
-          project_id: denoland
-      - name: Setup gcloud (windows)
-        if: |-
-          !(matrix.skip) && (runner.os == 'Windows' &&
-          matrix.profile == 'release' &&
-          matrix.job == 'test' &&
-          github.repository == 'codebenderhq/deno' &&
-          (github.ref == 'refs/heads/main' ||
-          startsWith(github.ref, 'refs/tags/')))
-        uses: google-github-actions/setup-gcloud@v1
-        env:
-          CLOUDSDK_PYTHON: '${{env.pythonLocation}}\python.exe'
-        with:
-          project_id: denoland
       - name: Configure canary build
         if: |-
           !(matrix.skip) && (matrix.job == 'test' &&
@@ -262,8 +219,8 @@ jobs:
           sudo mount --rbind /home /sysroot/home
           sudo mount -t proc /proc /sysroot/proc
 
-          wget https://github.com/codebenderhq/deno_third_party/raw/master/prebuilt/linux64/libdl/libdl.a
-          wget https://github.com/codebenderhq/deno_third_party/raw/master/prebuilt/linux64/libdl/libdl.so.2
+          wget https://github.com/denoland/deno_third_party/raw/master/prebuilt/linux64/libdl/libdl.a
+          wget https://github.com/denoland/deno_third_party/raw/master/prebuilt/linux64/libdl/libdl.so.2
 
           sudo ln -s libdl.so.2 /sysroot/lib/x86_64-linux-gnu/libdl.so
           sudo ln -s libdl.a /sysroot/lib/x86_64-linux-gnu/libdl.a
