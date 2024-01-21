@@ -73,24 +73,24 @@ jobs:
             job: test
             profile: debug
             os_display_name: windows-x86_64
-          - os: '${{ github.repository == ''denoland/deno'' && ''windows-2022-xl'' || ''windows-2022'' }}'
+          - os: '${{ github.repository == ''codebenderhq/deno'' && ''windows-2022-xl'' || ''windows-2022'' }}'
             job: test
             profile: release
             skip: '${{ !contains(github.event.pull_request.labels.*.name, ''ci-full'') && (github.event_name == ''pull_request'') }}'
-            runner: '${{ (!contains(github.event.pull_request.labels.*.name, ''ci-full'') && (github.event_name == ''pull_request'')) && ''ubuntu-22.04'' || github.repository == ''denoland/deno'' && ''windows-2022-xl'' || ''windows-2022'' }}'
+            runner: '${{ (!contains(github.event.pull_request.labels.*.name, ''ci-full'') && (github.event_name == ''pull_request'')) && ''ubuntu-22.04'' || github.repository == ''codebenderhq/deno'' && ''windows-2022-xl'' || ''windows-2022'' }}'
             os_display_name: windows-x86_64
-          - os: '${{ github.repository == ''denoland/deno'' && ''ubuntu-22.04-xl'' || ''ubuntu-22.04'' }}'
+          - os: '${{ github.repository == ''codebenderhq/deno'' && ''ubuntu-22.04-xl'' || ''ubuntu-22.04'' }}'
             job: test
             profile: release
             use_sysroot: true
             wpt: '${{ !startsWith(github.ref, ''refs/tags/'') }}'
             os_display_name: ubuntu-x86_64
-          - os: '${{ github.repository == ''denoland/deno'' && ''ubuntu-22.04-xl'' || ''ubuntu-22.04'' }}'
+          - os: '${{ github.repository == ''codebenderhq/deno'' && ''ubuntu-22.04-xl'' || ''ubuntu-22.04'' }}'
             job: bench
             profile: release
             use_sysroot: true
             skip: '${{ !contains(github.event.pull_request.labels.*.name, ''ci-full'') && (github.event_name == ''pull_request'' && !contains(github.event.pull_request.labels.*.name, ''ci-bench'')) }}'
-            runner: '${{ (!contains(github.event.pull_request.labels.*.name, ''ci-full'') && (github.event_name == ''pull_request'' && !contains(github.event.pull_request.labels.*.name, ''ci-bench''))) && ''ubuntu-22.04'' || github.repository == ''denoland/deno'' && ''ubuntu-22.04-xl'' || ''ubuntu-22.04'' }}'
+            runner: '${{ (!contains(github.event.pull_request.labels.*.name, ''ci-full'') && (github.event_name == ''pull_request'' && !contains(github.event.pull_request.labels.*.name, ''ci-bench''))) && ''ubuntu-22.04'' || github.repository == ''codebenderhq/deno'' && ''ubuntu-22.04-xl'' || ''ubuntu-22.04'' }}'
             os_display_name: ubuntu-x86_64
           - os: ubuntu-22.04
             job: test
@@ -146,7 +146,7 @@ jobs:
           !(matrix.skip) && (startsWith(matrix.os, 'ubuntu') &&
           matrix.profile == 'release' &&
           matrix.job == 'test' &&
-          github.repository == 'denoland/deno' &&
+          github.repository == 'codebenderhq/deno' &&
           startsWith(github.ref, 'refs/tags/'))
         run: |-
           mkdir -p target/release
@@ -186,7 +186,7 @@ jobs:
       - if: |-
           !(matrix.skip) && (matrix.profile == 'release' &&
           matrix.job == 'test' &&
-          github.repository == 'denoland/deno' &&
+          github.repository == 'codebenderhq/deno' &&
           (github.ref == 'refs/heads/main' ||
           startsWith(github.ref, 'refs/tags/')))
         name: Authenticate with Google Cloud
@@ -201,7 +201,7 @@ jobs:
           !(matrix.skip) && (runner.os != 'Windows' &&
           matrix.profile == 'release' &&
           matrix.job == 'test' &&
-          github.repository == 'denoland/deno' &&
+          github.repository == 'codebenderhq/deno' &&
           (github.ref == 'refs/heads/main' ||
           startsWith(github.ref, 'refs/tags/')))
         uses: google-github-actions/setup-gcloud@v1
@@ -212,7 +212,7 @@ jobs:
           !(matrix.skip) && (runner.os == 'Windows' &&
           matrix.profile == 'release' &&
           matrix.job == 'test' &&
-          github.repository == 'denoland/deno' &&
+          github.repository == 'codebenderhq/deno' &&
           (github.ref == 'refs/heads/main' ||
           startsWith(github.ref, 'refs/tags/')))
         uses: google-github-actions/setup-gcloud@v1
@@ -224,7 +224,7 @@ jobs:
         if: |-
           !(matrix.skip) && (matrix.job == 'test' &&
           matrix.profile == 'release' &&
-          github.repository == 'denoland/deno' &&
+          github.repository == 'codebenderhq/deno' &&
           github.ref == 'refs/heads/main')
         run: echo "DENO_CANARY=true" >> $GITHUB_ENV
       - if: '!(matrix.skip) && (matrix.use_sysroot)'
@@ -262,8 +262,8 @@ jobs:
           sudo mount --rbind /home /sysroot/home
           sudo mount -t proc /proc /sysroot/proc
 
-          wget https://github.com/denoland/deno_third_party/raw/master/prebuilt/linux64/libdl/libdl.a
-          wget https://github.com/denoland/deno_third_party/raw/master/prebuilt/linux64/libdl/libdl.so.2
+          wget https://github.com/codebenderhq/deno_third_party/raw/master/prebuilt/linux64/libdl/libdl.a
+          wget https://github.com/codebenderhq/deno_third_party/raw/master/prebuilt/linux64/libdl/libdl.so.2
 
           sudo ln -s libdl.so.2 /sysroot/lib/x86_64-linux-gnu/libdl.so
           sudo ln -s libdl.a /sysroot/lib/x86_64-linux-gnu/libdl.a
@@ -375,7 +375,7 @@ jobs:
         if: |-
           !(matrix.skip) && ((matrix.job == 'test' || matrix.job == 'bench') &&
           matrix.profile == 'release' && (matrix.use_sysroot ||
-          github.repository == 'denoland/deno'))
+          github.repository == 'codebenderhq/deno'))
         run: |-
           df -h
           cargo build --release --locked --all-targets
@@ -384,7 +384,7 @@ jobs:
         if: |-
           !(matrix.skip) && (matrix.job == 'test' &&
           matrix.profile == 'release' && (matrix.use_sysroot ||
-          (github.repository == 'denoland/deno' &&
+          (github.repository == 'codebenderhq/deno' &&
           (github.ref == 'refs/heads/main' ||
           startsWith(github.ref, 'refs/tags/')))))
         uses: actions/upload-artifact@v3
@@ -396,7 +396,7 @@ jobs:
           !(matrix.skip) && (startsWith(matrix.os, 'ubuntu') &&
           matrix.job == 'test' &&
           matrix.profile == 'release' &&
-          github.repository == 'denoland/deno')
+          github.repository == 'codebenderhq/deno')
         run: |-
           cd target/release
           zip -r deno-x86_64-unknown-linux-gnu.zip deno
@@ -406,7 +406,7 @@ jobs:
           !(matrix.skip) && (matrix.os == 'macos-12' &&
           matrix.job == 'test' &&
           matrix.profile == 'release' &&
-          github.repository == 'denoland/deno')
+          github.repository == 'codebenderhq/deno')
         env:
           APPLE_CODESIGN_KEY: '${{ secrets.APPLE_CODESIGN_KEY }}'
           APPLE_CODESIGN_PASSWORD: '${{ secrets.APPLE_CODESIGN_PASSWORD }}'
@@ -420,7 +420,7 @@ jobs:
           !(matrix.skip) && (matrix.os == 'macos-13-xlarge' &&
           matrix.job == 'test' &&
           matrix.profile == 'release' &&
-          github.repository == 'denoland/deno')
+          github.repository == 'codebenderhq/deno')
         env:
           APPLE_CODESIGN_KEY: '${{ secrets.APPLE_CODESIGN_KEY }}'
           APPLE_CODESIGN_PASSWORD: '${{ secrets.APPLE_CODESIGN_PASSWORD }}'
@@ -434,27 +434,9 @@ jobs:
           !(matrix.skip) && (startsWith(matrix.os, 'windows') &&
           matrix.job == 'test' &&
           matrix.profile == 'release' &&
-          github.repository == 'denoland/deno')
+          github.repository == 'codebenderhq/deno')
         shell: pwsh
         run: Compress-Archive -CompressionLevel Optimal -Force -Path target/release/deno.exe -DestinationPath target/release/deno-x86_64-pc-windows-msvc.zip
-      - name: Upload canary to dl.deno.land (unix)
-        if: |-
-          !(matrix.skip) && (runner.os != 'Windows' &&
-          matrix.job == 'test' &&
-          matrix.profile == 'release' &&
-          github.repository == 'denoland/deno' &&
-          github.ref == 'refs/heads/main')
-        run: 'gsutil -h "Cache-Control: public, max-age=3600" cp ./target/release/*.zip gs://dl.deno.land/canary/$(git rev-parse HEAD)/'
-      - name: Upload canary to dl.deno.land (windows)
-        if: |-
-          !(matrix.skip) && (runner.os == 'Windows' &&
-          matrix.job == 'test' &&
-          matrix.profile == 'release' &&
-          github.repository == 'denoland/deno' &&
-          github.ref == 'refs/heads/main')
-        env:
-          CLOUDSDK_PYTHON: '${{env.pythonLocation}}\python.exe'
-        run: 'gsutil -h "Cache-Control: public, max-age=3600" cp ./target/release/*.zip gs://dl.deno.land/canary/$(git rev-parse HEAD)/'
       - name: Autobahn testsuite
         if: |-
           !(matrix.skip) && (matrix.job == 'test' && matrix.profile == 'release' &&
@@ -480,7 +462,7 @@ jobs:
         if: |-
           !(matrix.skip) && (matrix.job == 'test' && matrix.profile == 'release' &&
           (matrix.use_sysroot || (
-          github.repository == 'denoland/deno' &&
+          github.repository == 'codebenderhq/deno' &&
           !startsWith(github.ref, 'refs/tags/'))))
         run: cargo test --release --locked
       - name: Check deno binary
@@ -524,42 +506,28 @@ jobs:
                                       --binary="$DENO_BIN"          \
                                       --json=wpt.json               \
                                       --wptreport=wptreport.json
-      - name: Upload wpt results to dl.deno.land
-        continue-on-error: true
-        if: |-
-          !(matrix.skip) && (matrix.wpt &&
-          runner.os == 'Linux' &&
-          matrix.profile == 'release' &&
-          github.repository == 'denoland/deno' &&
-          github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/'))
-        run: |-
-          gzip ./wptreport.json
-          gsutil -h "Cache-Control: public, max-age=3600" cp ./wpt.json gs://dl.deno.land/wpt/$(git rev-parse HEAD).json
-          gsutil -h "Cache-Control: public, max-age=3600" cp ./wptreport.json.gz gs://dl.deno.land/wpt/$(git rev-parse HEAD)-wptreport.json.gz
-          echo $(git rev-parse HEAD) > wpt-latest.txt
-          gsutil -h "Cache-Control: no-cache" cp wpt-latest.txt gs://dl.deno.land/wpt-latest.txt
-      - name: Upload wpt results to wpt.fyi
-        continue-on-error: true
-        if: |-
-          !(matrix.skip) && (matrix.wpt &&
-          runner.os == 'Linux' &&
-          matrix.profile == 'release' &&
-          github.repository == 'denoland/deno' &&
-          github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/'))
-        env:
-          WPT_FYI_USER: deno
-          WPT_FYI_PW: '${{ secrets.WPT_FYI_PW }}'
-          GITHUB_TOKEN: '${{ secrets.DENOBOT_PAT }}'
-        run: |-
-          ./target/release/deno run --allow-all --lock=tools/deno.lock.json \
-              ./tools/upload_wptfyi.js $(git rev-parse HEAD) --ghstatus
+#      - name: Upload wpt results to wpt.fyi
+#        continue-on-error: true
+#        if: |-
+#          !(matrix.skip) && (matrix.wpt &&
+#          runner.os == 'Linux' &&
+#          matrix.profile == 'release' &&
+#          github.repository == 'codebenderhq/deno' &&
+#          github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/'))
+#        env:
+#          WPT_FYI_USER: deno
+#          WPT_FYI_PW: '${{ secrets.WPT_FYI_PW }}'
+#          GITHUB_TOKEN: '${{ secrets.DENOBOT_PAT }}'
+#        run: |-
+#          ./target/release/deno run --allow-all --lock=tools/deno.lock.json \
+#              ./tools/upload_wptfyi.js $(git rev-parse HEAD) --ghstatus
       - name: Run benchmarks
         if: '!(matrix.skip) && (matrix.job == ''bench'' && !startsWith(github.ref, ''refs/tags/''))'
         run: cargo bench --locked
       - name: Post Benchmarks
         if: |-
           !(matrix.skip) && (matrix.job == 'bench' &&
-          github.repository == 'denoland/deno' &&
+          github.repository == 'codebenderhq/deno' &&
           github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/'))
         env:
           DENOBOT_PAT: '${{ secrets.DENOBOT_PAT }}'
@@ -576,7 +544,7 @@ jobs:
           git commit --message "Update benchmarks"
           git push origin gh-pages
       - name: Build product size info
-        if: '!(matrix.skip) && (matrix.job != ''lint'' && matrix.profile != ''debug'' && github.repository == ''denoland/deno'' && (github.ref == ''refs/heads/main'' || startsWith(github.ref, ''refs/tags/'')))'
+        if: '!(matrix.skip) && (matrix.job != ''lint'' && matrix.profile != ''debug'' && github.repository == ''codebenderhq/deno'' && (github.ref == ''refs/heads/main'' || startsWith(github.ref, ''refs/tags/'')))'
         run: |-
           du -hd1 "./target/${{ matrix.profile }}"
           du -ha  "./target/${{ matrix.profile }}/deno"
@@ -585,29 +553,11 @@ jobs:
         run: |-
           cat /proc/cpuinfo
           cat /proc/meminfo
-      - name: Upload release to dl.deno.land (unix)
-        if: |-
-          !(matrix.skip) && (runner.os != 'Windows' &&
-          matrix.job == 'test' &&
-          matrix.profile == 'release' &&
-          github.repository == 'denoland/deno' &&
-          startsWith(github.ref, 'refs/tags/'))
-        run: 'gsutil -h "Cache-Control: public, max-age=3600" cp ./target/release/*.zip gs://dl.deno.land/release/${GITHUB_REF#refs/*/}/'
-      - name: Upload release to dl.deno.land (windows)
-        if: |-
-          !(matrix.skip) && (runner.os == 'Windows' &&
-          matrix.job == 'test' &&
-          matrix.profile == 'release' &&
-          github.repository == 'denoland/deno' &&
-          startsWith(github.ref, 'refs/tags/'))
-        env:
-          CLOUDSDK_PYTHON: '${{env.pythonLocation}}\python.exe'
-        run: 'gsutil -h "Cache-Control: public, max-age=3600" cp ./target/release/*.zip gs://dl.deno.land/release/${GITHUB_REF#refs/*/}/'
       - name: Create release notes
         if: |-
           !(matrix.skip) && (matrix.job == 'test' &&
           matrix.profile == 'release' &&
-          github.repository == 'denoland/deno' &&
+          github.repository == 'codebenderhq/deno' &&
           startsWith(github.ref, 'refs/tags/'))
         run: |-
           export PATH=$PATH:$(pwd)/target/release
@@ -617,7 +567,7 @@ jobs:
         if: |-
           !(matrix.skip) && (matrix.job == 'test' &&
           matrix.profile == 'release' &&
-          github.repository == 'denoland/deno' &&
+          github.repository == 'codebenderhq/deno' &&
           startsWith(github.ref, 'refs/tags/'))
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
@@ -641,25 +591,3 @@ jobs:
             !./target/*/*.zip
             !./target/*/*.tar.gz
           key: '69-cargo-target-${{ matrix.os }}-${{ matrix.profile }}-${{ matrix.job }}-${{ github.sha }}'
-  publish-canary:
-    name: publish canary
-    runs-on: ubuntu-22.04
-    needs:
-      - build
-    if: github.repository == 'denoland/deno' && github.ref == 'refs/heads/main'
-    steps:
-      - name: Authenticate with Google Cloud
-        uses: google-github-actions/auth@v1
-        with:
-          project_id: denoland
-          credentials_json: '${{ secrets.GCP_SA_KEY }}'
-          export_environment_variables: true
-          create_credentials_file: true
-      - name: Setup gcloud
-        uses: google-github-actions/setup-gcloud@v1
-        with:
-          project_id: denoland
-      - name: Upload canary version file to dl.deno.land
-        run: |-
-          echo ${{ github.sha }} > canary-latest.txt
-          gsutil -h "Cache-Control: no-cache" cp canary-latest.txt gs://dl.deno.land/canary-latest.txt
