@@ -447,7 +447,7 @@ const ci = {
             "startsWith(matrix.os, 'ubuntu') &&",
             "matrix.profile == 'release' &&",
             "matrix.job == 'test' &&",
-            "github.repository == 'denoland/deno' &&",
+            "github.repository == 'codebenderhq/deno' &&",
             "startsWith(github.ref, 'refs/tags/')",
           ].join("\n"),
           run: [
@@ -472,54 +472,11 @@ const ci = {
         },
         installProtocStep,
         {
-          if: [
-            "matrix.profile == 'release' &&",
-            "matrix.job == 'test' &&",
-            "github.repository == 'denoland/deno' &&",
-            "(github.ref == 'refs/heads/main' ||",
-            "startsWith(github.ref, 'refs/tags/'))",
-          ].join("\n"),
-          ...authenticateWithGoogleCloud,
-        },
-        {
-          name: "Setup gcloud (unix)",
-          if: [
-            "runner.os != 'Windows' &&",
-            "matrix.profile == 'release' &&",
-            "matrix.job == 'test' &&",
-            "github.repository == 'denoland/deno' &&",
-            "(github.ref == 'refs/heads/main' ||",
-            "startsWith(github.ref, 'refs/tags/'))",
-          ].join("\n"),
-          uses: "google-github-actions/setup-gcloud@v1",
-          with: {
-            project_id: "denoland",
-          },
-        },
-        {
-          name: "Setup gcloud (windows)",
-          if: [
-            "runner.os == 'Windows' &&",
-            "matrix.profile == 'release' &&",
-            "matrix.job == 'test' &&",
-            "github.repository == 'denoland/deno' &&",
-            "(github.ref == 'refs/heads/main' ||",
-            "startsWith(github.ref, 'refs/tags/'))",
-          ].join("\n"),
-          uses: "google-github-actions/setup-gcloud@v1",
-          env: {
-            CLOUDSDK_PYTHON: "${{env.pythonLocation}}\\python.exe",
-          },
-          with: {
-            project_id: "denoland",
-          },
-        },
-        {
           name: "Configure canary build",
           if: [
             "matrix.job == 'test' &&",
             "matrix.profile == 'release' &&",
-            "github.repository == 'denoland/deno' &&",
+            "github.repository == 'codebenderhq/deno' &&",
             "github.ref == 'refs/heads/main'",
           ].join("\n"),
           run: 'echo "DENO_CANARY=true" >> $GITHUB_ENV',
@@ -648,7 +605,7 @@ const ci = {
           if: [
             "(matrix.job == 'test' || matrix.job == 'bench') &&",
             "matrix.profile == 'release' && (matrix.use_sysroot ||",
-            "github.repository == 'denoland/deno')",
+            "github.repository == 'codebenderhq/deno')",
           ].join("\n"),
           run: [
             // output fs space before and after building
@@ -662,7 +619,7 @@ const ci = {
           if: [
             "matrix.job == 'test' &&",
             "matrix.profile == 'release' && (matrix.use_sysroot ||",
-            "(github.repository == 'denoland/deno' &&",
+            "(github.repository == 'codebenderhq/deno' &&",
             "(github.ref == 'refs/heads/main' ||",
             "startsWith(github.ref, 'refs/tags/'))))",
           ].join("\n"),
@@ -678,7 +635,7 @@ const ci = {
             "startsWith(matrix.os, 'ubuntu') &&",
             "matrix.job == 'test' &&",
             "matrix.profile == 'release' &&",
-            "github.repository == 'denoland/deno'",
+            "github.repository == 'codebenderhq/deno'",
           ].join("\n"),
           run: [
             "cd target/release",
@@ -692,7 +649,7 @@ const ci = {
             `matrix.os == '${macosX86Runner}' &&`,
             "matrix.job == 'test' &&",
             "matrix.profile == 'release' &&",
-            "github.repository == 'denoland/deno'",
+            "github.repository == 'codebenderhq/deno'",
           ].join("\n"),
           env: {
             "APPLE_CODESIGN_KEY": "${{ secrets.APPLE_CODESIGN_KEY }}",
@@ -716,7 +673,7 @@ const ci = {
             `matrix.os == '${macosArmRunner}' &&`,
             "matrix.job == 'test' &&",
             "matrix.profile == 'release' &&",
-            "github.repository == 'denoland/deno'",
+            "github.repository == 'codebenderhq/deno'",
           ].join("\n"),
           env: {
             "APPLE_CODESIGN_KEY": "${{ secrets.APPLE_CODESIGN_KEY }}",
@@ -740,38 +697,11 @@ const ci = {
             "startsWith(matrix.os, 'windows') &&",
             "matrix.job == 'test' &&",
             "matrix.profile == 'release' &&",
-            "github.repository == 'denoland/deno'",
+            "github.repository == 'codebenderhq/deno'",
           ].join("\n"),
           shell: "pwsh",
           run:
             "Compress-Archive -CompressionLevel Optimal -Force -Path target/release/deno.exe -DestinationPath target/release/deno-x86_64-pc-windows-msvc.zip",
-        },
-        {
-          name: "Upload canary to dl.deno.land (unix)",
-          if: [
-            "runner.os != 'Windows' &&",
-            "matrix.job == 'test' &&",
-            "matrix.profile == 'release' &&",
-            "github.repository == 'denoland/deno' &&",
-            "github.ref == 'refs/heads/main'",
-          ].join("\n"),
-          run:
-            'gsutil -h "Cache-Control: public, max-age=3600" cp ./target/release/*.zip gs://dl.deno.land/canary/$(git rev-parse HEAD)/',
-        },
-        {
-          name: "Upload canary to dl.deno.land (windows)",
-          if: [
-            "runner.os == 'Windows' &&",
-            "matrix.job == 'test' &&",
-            "matrix.profile == 'release' &&",
-            "github.repository == 'denoland/deno' &&",
-            "github.ref == 'refs/heads/main'",
-          ].join("\n"),
-          env: {
-            CLOUDSDK_PYTHON: "${{env.pythonLocation}}\\python.exe",
-          },
-          run:
-            'gsutil -h "Cache-Control: public, max-age=3600" cp ./target/release/*.zip gs://dl.deno.land/canary/$(git rev-parse HEAD)/',
         },
         {
           name: "Autobahn testsuite",
@@ -810,7 +740,7 @@ const ci = {
           if: [
             "matrix.job == 'test' && matrix.profile == 'release' &&",
             "(matrix.use_sysroot || (",
-            "github.repository == 'denoland/deno' &&",
+            "github.repository == 'codebenderhq/deno' &&",
             "!startsWith(github.ref, 'refs/tags/')))",
           ].join("\n"),
           run: "cargo test --release --locked",
@@ -875,44 +805,26 @@ const ci = {
             "                            --wptreport=wptreport.json",
           ].join("\n"),
         },
-        {
-          name: "Upload wpt results to dl.deno.land",
-          "continue-on-error": true,
-          if: [
-            "matrix.wpt &&",
-            "runner.os == 'Linux' &&",
-            "matrix.profile == 'release' &&",
-            "github.repository == 'denoland/deno' &&",
-            "github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/')",
-          ].join("\n"),
-          run: [
-            "gzip ./wptreport.json",
-            'gsutil -h "Cache-Control: public, max-age=3600" cp ./wpt.json gs://dl.deno.land/wpt/$(git rev-parse HEAD).json',
-            'gsutil -h "Cache-Control: public, max-age=3600" cp ./wptreport.json.gz gs://dl.deno.land/wpt/$(git rev-parse HEAD)-wptreport.json.gz',
-            "echo $(git rev-parse HEAD) > wpt-latest.txt",
-            'gsutil -h "Cache-Control: no-cache" cp wpt-latest.txt gs://dl.deno.land/wpt-latest.txt',
-          ].join("\n"),
-        },
-        {
-          name: "Upload wpt results to wpt.fyi",
-          "continue-on-error": true,
-          if: [
-            "matrix.wpt &&",
-            "runner.os == 'Linux' &&",
-            "matrix.profile == 'release' &&",
-            "github.repository == 'denoland/deno' &&",
-            "github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/')",
-          ].join("\n"),
-          env: {
-            WPT_FYI_USER: "deno",
-            WPT_FYI_PW: "${{ secrets.WPT_FYI_PW }}",
-            GITHUB_TOKEN: "${{ secrets.DENOBOT_PAT }}",
-          },
-          run: [
-            "./target/release/deno run --allow-all --lock=tools/deno.lock.json \\",
-            "    ./tools/upload_wptfyi.js $(git rev-parse HEAD) --ghstatus",
-          ].join("\n"),
-        },
+        // {
+        //   name: "Upload wpt results to wpt.fyi",
+        //   "continue-on-error": true,
+        //   if: [
+        //     "matrix.wpt &&",
+        //     "runner.os == 'Linux' &&",
+        //     "matrix.profile == 'release' &&",
+        //     "github.repository == 'codebenderhq/deno' &&",
+        //     "github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/')",
+        //   ].join("\n"),
+        //   env: {
+        //     WPT_FYI_USER: "deno",
+        //     WPT_FYI_PW: "${{ secrets.WPT_FYI_PW }}",
+        //     GITHUB_TOKEN: "${{ secrets.DENOBOT_PAT }}",
+        //   },
+        //   run: [
+        //     "./target/release/deno run --allow-all --lock=tools/deno.lock.json \\",
+        //     "    ./tools/upload_wptfyi.js $(git rev-parse HEAD) --ghstatus",
+        //   ].join("\n"),
+        // },
         {
           name: "Run benchmarks",
           if: "matrix.job == 'bench' && !startsWith(github.ref, 'refs/tags/')",
@@ -922,7 +834,7 @@ const ci = {
           name: "Post Benchmarks",
           if: [
             "matrix.job == 'bench' &&",
-            "github.repository == 'denoland/deno' &&",
+            "github.repository == 'codebenderhq/deno' &&",
             "github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/')",
           ].join("\n"),
           env: {
@@ -945,7 +857,7 @@ const ci = {
         {
           name: "Build product size info",
           if:
-            "matrix.job != 'lint' && matrix.profile != 'debug' && github.repository == 'denoland/deno' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))",
+            "matrix.job != 'lint' && matrix.profile != 'debug' && github.repository == 'codebenderhq/deno' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))",
           run: [
             'du -hd1 "./target/${{ matrix.profile }}"',
             'du -ha  "./target/${{ matrix.profile }}/deno"',
@@ -960,38 +872,11 @@ const ci = {
           ].join("\n"),
         },
         {
-          name: "Upload release to dl.deno.land (unix)",
-          if: [
-            "runner.os != 'Windows' &&",
-            "matrix.job == 'test' &&",
-            "matrix.profile == 'release' &&",
-            "github.repository == 'denoland/deno' &&",
-            "startsWith(github.ref, 'refs/tags/')",
-          ].join("\n"),
-          run:
-            'gsutil -h "Cache-Control: public, max-age=3600" cp ./target/release/*.zip gs://dl.deno.land/release/${GITHUB_REF#refs/*/}/',
-        },
-        {
-          name: "Upload release to dl.deno.land (windows)",
-          if: [
-            "runner.os == 'Windows' &&",
-            "matrix.job == 'test' &&",
-            "matrix.profile == 'release' &&",
-            "github.repository == 'denoland/deno' &&",
-            "startsWith(github.ref, 'refs/tags/')",
-          ].join("\n"),
-          env: {
-            CLOUDSDK_PYTHON: "${{env.pythonLocation}}\\python.exe",
-          },
-          run:
-            'gsutil -h "Cache-Control: public, max-age=3600" cp ./target/release/*.zip gs://dl.deno.land/release/${GITHUB_REF#refs/*/}/',
-        },
-        {
           name: "Create release notes",
           if: [
             "matrix.job == 'test' &&",
             "matrix.profile == 'release' &&",
-            "github.repository == 'denoland/deno' &&",
+            "github.repository == 'codebenderhq/deno' &&",
             "startsWith(github.ref, 'refs/tags/')",
           ].join("\n"),
           run: [
@@ -1005,7 +890,7 @@ const ci = {
           if: [
             "matrix.job == 'test' &&",
             "matrix.profile == 'release' &&",
-            "github.repository == 'denoland/deno' &&",
+            "github.repository == 'codebenderhq/deno' &&",
             "startsWith(github.ref, 'refs/tags/')",
           ].join("\n"),
           env: {
@@ -1041,30 +926,6 @@ const ci = {
           },
         },
       ]),
-    },
-    "publish-canary": {
-      name: "publish canary",
-      "runs-on": "ubuntu-22.04",
-      needs: ["build"],
-      if:
-        "github.repository == 'denoland/deno' && github.ref == 'refs/heads/main'",
-      steps: [
-        authenticateWithGoogleCloud,
-        {
-          name: "Setup gcloud",
-          uses: "google-github-actions/setup-gcloud@v1",
-          with: {
-            project_id: "denoland",
-          },
-        },
-        {
-          name: "Upload canary version file to dl.deno.land",
-          run: [
-            "echo ${{ github.sha }} > canary-latest.txt",
-            'gsutil -h "Cache-Control: no-cache" cp canary-latest.txt gs://dl.deno.land/canary-latest.txt',
-          ].join("\n"),
-        },
-      ],
     },
   },
 };

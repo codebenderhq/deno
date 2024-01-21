@@ -177,6 +177,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
+      - name: Install protoc
+        uses: arduino/setup-protoc@v2
+        with:
+          version: '21.12'
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+        if: '!(matrix.skip)'
       - name: Configure canary build
         if: |-
           !(matrix.skip) && (matrix.job == 'test' &&
@@ -463,21 +469,6 @@ jobs:
                                       --binary="$DENO_BIN"          \
                                       --json=wpt.json               \
                                       --wptreport=wptreport.json
-#      - name: Upload wpt results to wpt.fyi
-#        continue-on-error: true
-#        if: |-
-#          !(matrix.skip) && (matrix.wpt &&
-#          runner.os == 'Linux' &&
-#          matrix.profile == 'release' &&
-#          github.repository == 'codebenderhq/deno' &&
-#          github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/'))
-#        env:
-#          WPT_FYI_USER: deno
-#          WPT_FYI_PW: '${{ secrets.WPT_FYI_PW }}'
-#          GITHUB_TOKEN: '${{ secrets.DENOBOT_PAT }}'
-#        run: |-
-#          ./target/release/deno run --allow-all --lock=tools/deno.lock.json \
-#              ./tools/upload_wptfyi.js $(git rev-parse HEAD) --ghstatus
       - name: Run benchmarks
         if: '!(matrix.skip) && (matrix.job == ''bench'' && !startsWith(github.ref, ''refs/tags/''))'
         run: cargo bench --locked
