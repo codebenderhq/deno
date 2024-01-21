@@ -18,14 +18,14 @@ const macosArmRunner = "macos-13-xlarge";
 const Runners = (() => {
   return {
     ubuntuXl:
-      `\${{ github.repository == 'denoland/deno' && '${ubuntuXlRunner}' || '${ubuntuRunner}' }}`,
+      `\${{ github.repository == 'codebenderhq/deno' && '${ubuntuXlRunner}' || '${ubuntuRunner}' }}`,
     ubuntu: ubuntuRunner,
     linux: ubuntuRunner,
     macos: macosX86Runner,
     macosArm: macosArmRunner,
     windows: windowsRunner,
     windowsXl:
-      `\${{ github.repository == 'denoland/deno' && '${windowsXlRunner}' || '${windowsRunner}' }}`,
+      `\${{ github.repository == 'codebenderhq/deno' && '${windowsXlRunner}' || '${windowsRunner}' }}`,
   };
 })();
 const prCacheKeyPrefix =
