@@ -183,17 +183,6 @@ const installDenoStep = {
   with: { "deno-version": "v1.x" },
 };
 
-const authenticateWithGoogleCloud = {
-  name: "Authenticate with Google Cloud",
-  uses: "google-github-actions/auth@v1",
-  with: {
-    "project_id": "denoland",
-    "credentials_json": "${{ secrets.GCP_SA_KEY }}",
-    "export_environment_variables": true,
-    "create_credentials_file": true,
-  },
-};
-
 function skipJobsIfPrAndMarkedSkip(
   steps: Record<string, unknown>[],
 ): Record<string, unknown>[] {
